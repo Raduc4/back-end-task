@@ -1,9 +1,9 @@
-import { HasMany, Model } from 'sequelize';
+import { HasMany, Model } from "sequelize";
 
-import type { SequelizeModels } from '../sequelize';
-import type { Post } from './types';
+import type { SequelizeModels } from "../sequelize";
+import type { Post } from "./types";
 
-import { UserType } from '../constants';
+import { UserType } from "../constants";
 
 export class User extends Model {
   static associations: {
@@ -19,7 +19,7 @@ export class User extends Model {
   updatedAt!: Date;
 
   static associate(models: SequelizeModels): void {
-    this.hasMany(models.posts, { foreignKey: 'authorId', as: 'posts' });
+    // this.hasMany(models.posts, { foreignKey: "authorId", as: "posts" });
   }
 }
 

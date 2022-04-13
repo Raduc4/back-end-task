@@ -1,7 +1,7 @@
-import { BelongsTo, Model } from 'sequelize';
+import { BelongsTo, Model } from "sequelize";
 
-import type { SequelizeModels } from '../sequelize';
-import type { User } from './types';
+import type { SequelizeModels } from "../sequelize";
+import type { User } from "./types";
 
 export class Post extends Model {
   static associations: {
@@ -16,7 +16,7 @@ export class Post extends Model {
   updatedAt!: Date;
 
   static associate(models: SequelizeModels): void {
-    this.belongsTo(models.users, { foreignKey: 'authorId', as: 'author' });
+    this.belongsTo(models.users, { foreignKey: "authorId", as: "author" });
   }
 }
 

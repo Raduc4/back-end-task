@@ -1,12 +1,11 @@
 import { Router, RequestHandler } from "express";
 import { Op } from "sequelize";
-import bcrypt from "bcrypt";
 
 import type { SequelizeClient } from "../sequelize";
 import type { User } from "../repositories/types";
 
 import { BadRequestError, UnauthorizedError } from "../errors";
-import { hashPassword, generateToken, isValidToken } from "../security";
+import { hashPassword, generateToken } from "../security";
 import {
   initTokenValidationRequestHandler,
   initAdminValidationRequestHandler,
@@ -29,7 +28,9 @@ export function initUsersRouter(sequelizeClient: SequelizeClient): Router {
       initCreateUserRequestHandler(sequelizeClient)
     );
 
-  router.route("/login").post(initLoginUserRequestHandler(sequelizeClient));
+  router
+    .route("/login")
+    .post(tokenValidation, initLoginUserRequestHandler(sequelizeClient));
   router
     .route("/register")
     .post(initRegisterUserRequestHandler(sequelizeClient));
@@ -111,24 +112,17 @@ function initLoginUserRequestHandler(
         throw new UnauthorizedError("EMAIL_OR_PASSWORD_INCORRECT");
       }
 
-      if (comparePasswords(user.passwordHash, password) === false) {
+      if (user.passwordHash !== hashPassword(password)) {
         throw new UnauthorizedError("EMAIL_OR_PASSWORD_INCORRECT");
       }
 
       const token = generateToken({ id: user.id });
-      console.log(isValidToken(token));
 
       return res.send({ token }).end();
     } catch (error) {
       next(error);
     }
   };
-}
-
-function comparePasswords(hash: string, myPlaintextPassword: string): boolean {
-  const value = bcrypt.compareSync(myPlaintextPassword, hash);
-  console.log("Value", value);
-  return value;
 }
 
 function initRegisterUserRequestHandler(
@@ -181,14 +175,8 @@ async function createUser(
       throw new BadRequestError("EMAIL_ALREADY_USED");
     }
   }
-  const hashedPassword = hashPassword(password);
 
-  await models.users.create({
-    type,
-    name,
-    email,
-    passwordHash: hashedPassword,
-  });
+  await models.users.create({ type, name, email, passwordHash: password });
 }
 
 type CreateUserData = Pick<User, "type" | "name" | "email"> & {
