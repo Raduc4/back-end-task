@@ -6,7 +6,12 @@ import type { SequelizeClient } from "../sequelize";
 import type { User } from "../repositories/types";
 
 import { BadRequestError, UnauthorizedError } from "../errors";
-import { hashPassword, generateToken, isValidToken } from "../security";
+import {
+  hashPassword,
+  generateToken,
+  isValidToken,
+  extraDataFromToken,
+} from "../security";
 import {
   initTokenValidationRequestHandler,
   initAdminValidationRequestHandler,
@@ -103,32 +108,27 @@ function initLoginUserRequestHandler(
       };
 
       const user = (await models.users.findOne({
-        attributes: ["id", "passwordHash"],
+        attributes: ["id", "passwordHash", "email", "type"],
         where: { email },
         raw: true,
-      })) as Pick<User, "id" | "passwordHash"> | null;
+      })) as Pick<User, "id" | "passwordHash" | "type" | "email"> | null;
       if (!user) {
         throw new UnauthorizedError("EMAIL_OR_PASSWORD_INCORRECT");
       }
 
-      if (comparePasswords(user.passwordHash, password) === false) {
+      if (bcrypt.compareSync(password, user.passwordHash) === false) {
         throw new UnauthorizedError("EMAIL_OR_PASSWORD_INCORRECT");
       }
+      console.log(user.type);
 
-      const token = generateToken({ id: user.id });
-      console.log(isValidToken(token));
+      const token = generateToken({ id: user.id, type: user.type });
+      console.log(extraDataFromToken(token));
 
       return res.send({ token }).end();
     } catch (error) {
       next(error);
     }
   };
-}
-
-function comparePasswords(hash: string, myPlaintextPassword: string): boolean {
-  const value = bcrypt.compareSync(myPlaintextPassword, hash);
-  console.log("Value", value);
-  return value;
 }
 
 function initRegisterUserRequestHandler(

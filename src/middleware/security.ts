@@ -3,11 +3,7 @@ import { RequestHandler } from "express";
 import type { SequelizeClient } from "../sequelize";
 import type { User } from "../repositories/types";
 
-import {
-  UnauthorizedError,
-  ForbiddenError,
-  NotImplementedError,
-} from "../errors";
+import { UnauthorizedError } from "../errors";
 import { isValidToken, extraDataFromToken } from "../security";
 import { UserType } from "../constants";
 
@@ -66,7 +62,22 @@ export function initTokenValidationRequestHandler(
 // NOTE(roman): assuming that `tokenValidationRequestHandler` is placed before
 export function initAdminValidationRequestHandler(): RequestHandler {
   return function adminValidationRequestHandler(req, res, next): void {
-    throw new NotImplementedError("ADMIN_VALIDATION_NOT_IMPLEMENTED_YET");
+    // TODO: (Radu): fix this because is's a security lack. Maybe to find the user by ID in DB and check by type.
+    const authorizationHeaderValue = req.header("authorization");
+
+    if (!authorizationHeaderValue) {
+      throw new UnauthorizedError("AUTH_MISSING");
+    }
+
+    const [_, token] = authorizationHeaderValue.split(" ");
+
+    const { id, type } = extraDataFromToken(token);
+    console.log(type, id);
+    if (type === UserType.ADMIN) {
+      next();
+    } else {
+      throw new UnauthorizedError("NOT ADMIN");
+    }
   };
 }
 

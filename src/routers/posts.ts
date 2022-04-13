@@ -13,7 +13,7 @@ import {
 } from "../middleware/security";
 import { UserType } from "../constants";
 
-export function initUsersRouter(sequelizeClient: SequelizeClient): Router {
+export function initPostsRouter(sequelizeClient: SequelizeClient): Router {
   const router = Router({ mergeParams: true });
 
   const tokenValidation = initTokenValidationRequestHandler(sequelizeClient);
@@ -27,13 +27,6 @@ export function initUsersRouter(sequelizeClient: SequelizeClient): Router {
       adminValidation,
       initCreateUserRequestHandler(sequelizeClient)
     );
-
-  router
-    .route("/login")
-    .post(tokenValidation, initLoginUserRequestHandler(sequelizeClient));
-  router
-    .route("/register")
-    .post(initRegisterUserRequestHandler(sequelizeClient));
 
   return router;
 }

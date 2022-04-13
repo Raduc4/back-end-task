@@ -1,6 +1,7 @@
 import { NotImplementedError, UnauthorizedError } from "./errors";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { UserType } from "./constants";
 // TODO(roman): implement these
 // external libraries can be used
 // you can even ignore them and use your own preferred method
@@ -34,4 +35,5 @@ export function extraDataFromToken(token: string): TokenData {
 
 export interface TokenData {
   id: number;
+  type?: UserType;
 }

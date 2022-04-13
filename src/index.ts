@@ -6,7 +6,7 @@ if (result.error) {
 const { DATABASE, HOST, USERNAME, PASSWORD } = process.env;
 import express from "express";
 import { initSequelizeClient } from "./sequelize";
-import { initUsersRouter } from "./routers";
+import { initPostsRouter, initUsersRouter } from "./routers";
 import {
   initErrorRequestHandler,
   initNotFoundRequestHandler,
@@ -31,6 +31,7 @@ async function main(): Promise<void> {
   app.use(express.json());
 
   app.use("/api/v1/users", initUsersRouter(sequelizeClient));
+  app.use("/api/v1/posts", initPostsRouter(sequelizeClient));
   app.use("/", initNotFoundRequestHandler());
 
   app.use(initErrorRequestHandler());
