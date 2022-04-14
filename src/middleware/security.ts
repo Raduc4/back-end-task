@@ -19,7 +19,6 @@ export function initTokenValidationRequestHandler(
       const { models } = sequelizeClient;
 
       const authorizationHeaderValue = req.header("authorization");
-      console.log(req.header("authorization"));
       if (!authorizationHeaderValue) {
         throw new UnauthorizedError("AUTH_MISSING");
       }
@@ -38,7 +37,6 @@ export function initTokenValidationRequestHandler(
       }
 
       const { id } = extraDataFromToken(token);
-      console.log(id);
 
       const user = await models.users.findByPk(id);
       if (!user) {
@@ -53,7 +51,6 @@ export function initTokenValidationRequestHandler(
 
       return next();
     } catch (error) {
-      console.log(error);
       return next(error);
     }
   };
@@ -72,7 +69,6 @@ export function initAdminValidationRequestHandler(): RequestHandler {
     const [_, token] = authorizationHeaderValue.split(" ");
 
     const { id, type } = extraDataFromToken(token);
-    console.log(type, id);
     if (type === UserType.ADMIN) {
       next();
     } else {

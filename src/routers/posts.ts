@@ -28,6 +28,11 @@ export function initPostsRouter(sequelizeClient: SequelizeClient): Router {
   router
     .route("/")
     .get(tokenValidation, initFindPostsRequestHandler(sequelizeClient));
+  router.route("/:id").delete(
+    tokenValidation,
+    // adminValidation,
+    initDeletePostsRequestHandler(sequelizeClient)
+  );
 
   // GET all public posts
   router
@@ -76,6 +81,22 @@ function initFindAllPublicPostsRequestHandler(
   };
 }
 
+function initDeletePostsRequestHandler(
+  sequelizeClient: SequelizeClient
+): RequestHandler {
+  return async function deletePostsRequestHandler(req, res, next) {
+    const { models } = sequelizeClient;
+    try {
+      const post = await models.posts.destroy({
+        where: { id: req.params.id, isHidden: false },
+      });
+      res.json(post);
+    } catch (error) {
+      next(error);
+    }
+  };
+}
+
 function initCreatePostRequestHandler(
   sequelizeClient: SequelizeClient
 ): RequestHandler {
@@ -113,19 +134,6 @@ async function createPost(
   const { title, content, authorId, isHidden } = data;
 
   const { models } = sequelizeClient;
-
-  // const similarPost = (await models.users.findOne({
-  //   attributes: ["id", "name", "email"],
-  //   where: {
-  //     [Op.or]: [{ title }, { content }],
-  //   },
-  //   raw: true,
-  // })) as Pick<Post, "title" | "content"> | null;
-  // if (similarPost) {
-  //   if (similarPost.title === title) {
-  //     throw new BadRequestError("TITLE_ALREADY_USED");
-  //   }
-  // }
 
   await models.posts.create({
     id: uuidv4(),

@@ -8,7 +8,6 @@ import { UserType } from "./constants";
 
 export function hashPassword(password: string): string {
   const pass = bcrypt.hashSync(password, 10);
-  console.log("Security gen pass", pass);
   return pass;
 }
 

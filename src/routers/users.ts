@@ -119,10 +119,8 @@ function initLoginUserRequestHandler(
       if (bcrypt.compareSync(password, user.passwordHash) === false) {
         throw new UnauthorizedError("EMAIL_OR_PASSWORD_INCORRECT");
       }
-      console.log(user.type);
 
       const token = generateToken({ id: user.id, type: user.type });
-      console.log(extraDataFromToken(token));
 
       return res.send({ token }).end();
     } catch (error) {
