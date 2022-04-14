@@ -12,7 +12,8 @@
     "start": "node --enable-source-maps dist",
     "compile": "shx rm -rf dist && tsc -p tsconfig.json",
     "start:slow": "npm run compile && npm start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "",
@@ -20,10 +21,14 @@
   "dependencies": {
     "bcrypt": "^5.0.1",
     "dotenv": "^16.0.0",
+    "eslint-config-prettier": "^8.5.0",
     "express": "^4.17.2",
+    "husky": "^7.0.4",
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
+    "lint-staged": "^12.3.7",
     "pg": "^8.7.1",
+    "prettier": "^2.6.2",
     "sequelize": "^6.12.0",
     "tslib": "^2.3.1",
     "uuid": "^8.3.2"
@@ -35,10 +40,13 @@
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.7.0",
     "@typescript-eslint/parser": "^5.7.0",
-    "eslint": "^8.5.0",
+    "eslint": "^8.13.0",
     "nodemon": "^2.0.15",
     "shx": "^0.3.3",
     "ts-node": "^10.7.0",
     "typescript": "^4.5.4"
+  },
+  "lint-staged": {
+    "*.{js,ts}": "prettier --write"
   }
 }
