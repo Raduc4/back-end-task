@@ -1,4 +1,4 @@
-![Logo](https://bend.md/images/5e8730206d541c6309354d3e_image%20(4).png)
+![Logo](<https://bend.md/images/5e8730206d541c6309354d3e_image%20(4).png>)
 
 # Back-End Task
 
@@ -9,14 +9,14 @@ Blogging can involve many things so, to keep this simple, the main focus is on *
 ### Requirements:
 
 1. RESTfull web service working with JSON data in node.js using express and postgresql
-1. two types of **users**: **bloggers** and **admins**
-1. authentication with name/email and password, with sign-up and sign-in for **bloggers**, but only sign-in for **admins**
-1. **bloggers** can create **posts**
+1. two types of **users**: **bloggers** and **admins**✅
+1. authentication with name/email and password, with sign-up and sign-in for **bloggers**, but only sign-in for **admins**✅
+1. **bloggers** can create **posts**✅
 1. **bloggers** can update and remove their **posts**
 1. **bloggers** can publish and hide their **posts**
-1. **bloggers** can see their **posts** whether they're public or hidden
-1. **bloggers** can see **posts** of other **bloggers** as long as they're public
-1. **admins** can do everything **bloggers** can do
+1. **bloggers** can see their **posts** whether they're public or hidden✅
+1. **bloggers** can see **posts** of other **bloggers** as long as they're public✅
+1. **admins** can do everything **bloggers** can do✅
 1. **admins** can remove any public **post**
 
 There is an incomplete implementation in this repo in order to skip through setup and to test your skill of working with an existing codebase, but there are no restrictions to what can be changed, so you can rewrite the whole thing from scratch. If you choose to start with this then fork this repo so that it will easier to see all the changes. There are also a couple of TODOs which you'll have to do and there may or may not be bugs, so good luck.

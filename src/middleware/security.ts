@@ -62,7 +62,7 @@ export function initTokenValidationRequestHandler(
 // NOTE(roman): assuming that `tokenValidationRequestHandler` is placed before
 export function initAdminValidationRequestHandler(): RequestHandler {
   return function adminValidationRequestHandler(req, res, next): void {
-    // TODO: (Radu): fix this because is's a security lack. Maybe to find the user by ID in DB and check by type.
+    // TODO: (Radu): fix this because is's a security lack. Maybe to find the user by ID findByPk in DB and check by type.
     const authorizationHeaderValue = req.header("authorization");
 
     if (!authorizationHeaderValue) {

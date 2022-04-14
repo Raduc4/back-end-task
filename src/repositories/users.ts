@@ -19,7 +19,7 @@ export class User extends Model {
   updatedAt!: Date;
 
   static associate(models: SequelizeModels): void {
-    // this.hasMany(models.posts, { foreignKey: "id", as: "posts" });
+    this.hasMany(models.posts, { foreignKey: "authorId", as: "posts" });
   }
 }
 

@@ -1,49 +1,53 @@
-import { Sequelize, DataTypes } from 'sequelize';
+import { Sequelize, DataTypes } from "sequelize";
 
-import { Post } from '../repositories/posts';
+import { Post } from "../repositories/posts";
 
 export function setupPostsModel(modelName: string, sequelize: Sequelize): void {
-  Post.init({
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
+  Post.init(
+    {
+      id: {
+        type: DataTypes.STRING,
+        primaryKey: true,
+        allowNull: false,
+      },
+      title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      content: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+        unique: true,
+      },
+      isHidden: {
+        type: DataTypes.BOOLEAN,
+        field: "is_hidden",
+        allowNull: false,
+        defaultValue: false,
+      },
+      createdAt: {
+        type: DataTypes.DATE,
+        field: "created_at",
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      },
+      updatedAt: {
+        type: DataTypes.DATE,
+        field: "updated_at",
+        allowNull: false,
+        defaultValue: DataTypes.NOW,
+      },
     },
-    title: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true,
-    },
-    content: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-      unique: true,
-    },
-    isHidden: {
-      type: DataTypes.BOOLEAN,
-      field: 'is_hidden',
-      allowNull: false,
-      defaultValue: false,
-    },
-    createdAt: {
-      type: DataTypes.DATE,
-      field: 'created_at',
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-    updatedAt: {
-      type: DataTypes.DATE,
-      field: 'updated_at',
-      allowNull: false,
-      defaultValue: DataTypes.NOW,
-    },
-  }, {
-    sequelize,
-    tableName: 'posts',
-    modelName,
-    name: {
-      singular: 'post',
-      plural: 'posts',
-    },
-    timestamps: true,
-  });
+    {
+      sequelize,
+      tableName: "posts",
+      modelName,
+      name: {
+        singular: "post",
+        plural: "posts",
+      },
+      timestamps: true,
+    }
+  );
 }

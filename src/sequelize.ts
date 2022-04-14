@@ -2,7 +2,7 @@ import { Sequelize, Options } from "sequelize";
 
 import type { PostsModel, UsersModel } from "./repositories/types";
 
-import { setupUsersModel } from "./models";
+import { setupPostsModel, setupUsersModel } from "./models";
 
 const postsModelName = "posts";
 const usersModelName = "users";
@@ -23,6 +23,7 @@ export async function initSequelizeClient(
   });
 
   setupUsersModel(usersModelName, sequelizeClient);
+  setupPostsModel(postsModelName, sequelizeClient);
 
   associateModels(sequelizeClient.models as unknown as SequelizeModels);
 
@@ -49,8 +50,8 @@ type SetupSequelizeParams = Pick<
 >;
 
 export interface SequelizeModels {
-  [usersModelName]: UsersModel;
   [postsModelName]: PostsModel;
+  [usersModelName]: UsersModel;
 }
 
 interface ModelWithPossibleAssociations {
