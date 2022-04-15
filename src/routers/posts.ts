@@ -1,7 +1,7 @@
 import { Router, RequestHandler } from 'express';
 import { Op, UpdateOptions } from 'sequelize';
 import { v4 as uuidv4 } from 'uuid';
-
+import { check, validationResult } from 'express-validator';
 import type { SequelizeClient } from '../sequelize';
 import type { Post } from '../repositories/types';
 
@@ -19,7 +19,14 @@ export function initPostsRouter(sequelizeClient: SequelizeClient): Router {
 
 	router
 		.route('/create')
-		.post(tokenValidation, initCreatePostRequestHandler(sequelizeClient));
+		.post(
+			tokenValidation,
+			[
+				check('title').isLength({ min: 3 }),
+				check('content').isLength({ max: 200 }),
+			],
+			initCreatePostRequestHandler(sequelizeClient)
+		);
 
 	// GET all private posts
 	router
@@ -42,7 +49,11 @@ export function initPostsRouter(sequelizeClient: SequelizeClient): Router {
 
 	router
 		.route('/visibility/:id')
-		.put(tokenValidation, initUpdateVisibilityRequestHandler(sequelizeClient));
+		.put(
+			tokenValidation,
+			[check('isHidden').isBoolean()],
+			initUpdateVisibilityRequestHandler(sequelizeClient)
+		);
 
 	// GET all public posts
 	router
@@ -83,7 +94,10 @@ function initUpdateVisibilityRequestHandler(
 		const { isHidden } = req.body as UpdateVisibilityData;
 		const { models } = sequelizeClient;
 		const { user } = (req as any).auth as RequestAuth;
-
+		const errors = validationResult(req);
+		if (!errors.isEmpty()) {
+			throw new Error(errors.array()[0].msg);
+		}
 		try {
 			const posts = await models.posts.update(
 				{ isHidden },
@@ -133,13 +147,10 @@ function initDeletePostsRequestHandler(
 ): RequestHandler {
 	return async function deletePostsRequestHandler(req, res, next) {
 		const { models } = sequelizeClient;
-		const { user } = (req as any).auth as RequestAuth;
-		console.log(user.id);
-		console.log(req.params.id);
 
 		try {
 			const post = await models.posts.destroy({
-				where: { id: req.params.id },
+				where: { id: req.params.id, isHidden: false },
 			});
 			res.json(post);
 		} catch (error) {
@@ -182,7 +193,10 @@ function initCreatePostRequestHandler(
 			const {
 				user: { id },
 			} = (req as any).auth as RequestAuth;
-
+			const errors = validationResult(req);
+			if (!errors.isEmpty()) {
+				throw new Error(errors.array()[0].msg);
+			}
 			await createPost(
 				{ title, content, authorId: id, isHidden },
 				sequelizeClient
